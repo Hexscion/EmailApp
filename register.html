@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="registerApp">
+<head>
+    <meta charset="UTF-8">
+    <meta ng-model="viewport" content="width=device-width, initial-scale=1">
+    <title>Register</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- Font Awesome -->
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+
+    <!-- AngularJS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.2/angular.min.js" integrity="sha512-7oYXeK0OxTFxndh0erL8FsjGvrl2VMDor6fVqzlLGfwOQQqTbYsGPv4ZZ15QHfSk80doyaM0ZJdvkyDcVO7KFA==" crossorigin="anonymous"></script>
+
+    <!-- Jquery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+
+    <style>
+        body,html {
+            height: 100%;
+        }
+        a,.display-4 {
+            background: linear-gradient(to right, #dc2430, #7b4397);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+
+    <script>
+        var app=angular.module("registerApp",[]);
+        app.controller("registerContr",function($scope,$http) {
+            $scope.registerUser=function() {
+                if($scope.pass==$scope.repass) {
+                    $http.get("get/registerUser.php", {
+                        params: {
+                            'fname': $scope.fname,
+                            'lname': $scope.lname,
+                            'dob': $scope.dob,
+                            'phone': $scope.phone,
+                            'pass': $scope.pass,
+                            'email': $scope.email
+                        }
+                    }).then(function (response) {
+                        var valid = response.data;
+                        if (valid == 1) {
+                            alert("Registration Successful");
+                            window.location.href = "index.html";
+                        } else
+                            alert("Email ID taken");
+                    })
+                } else
+                    alert("Passwords dont match");
+            }
+        })
+    </script>
+</head>
+<body style=" background:linear-gradient(to left, #7b4397, #dc2430);" ng-controller="registerContr">
+<div class="container h-100">
+    <div class="row align-items-center h-100">
+        <div class="col-6 mx-auto">
+            <div class="card h-100 justify-content-center" style="width: 550px; padding: 20px">
+                <form class="was-validated" ng-submit="registerUser()" method="POST">
+                    <div class="text-center">
+                        <span class="display-4">Create an Account</span>
+                        <hr/>
+                    </div>
+
+                    <div class="row">
+                        <div class="col form-group">
+                            <label for="fname">First Name:</label>
+                            <input type="text" class="form-control" id="fname" placeholder="First Name" ng-model="fname" required>
+                        </div>
+
+                        <div class="col form-group">
+                            <label for="lname">Last Name:</label>
+                            <input type="text" class="form-control" id="lname" placeholder="Last Name" ng-model="lname" required>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col form-group">
+                            <label for="dob">Date of birth:</label>
+                            <input type="date" class="form-control" id="dob" ng-model="dob" required>
+                        </div>
+
+                        <div class="col form-group">
+                            <label for="phone">Phone Number:</label>
+                            <input type="tel" class="form-control" id="phone" placeholder="Phone Number" ng-model="phone" pattern=".{10,10}" required>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col form-group">
+                            <label for="pass">Password:</label>
+                            <input type="password" class="form-control" id="pass" placeholder="Password" ng-model="pass" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&]).{8,20}" required>
+                        </div>
+
+                        <div class="col form-group">
+                            <label for="repass">Retype Password:</label>
+                            <input type="password" class="form-control" id="repass" placeholder="Confirm" ng-model="repass" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&]).{8,20}" required>
+                        </div>
+                    </div>
+
+                    <div class="row text-center text-black-50">
+                        <div class="col">
+                            <span>Use 8 or more characters with a mix of letters, numbers & symbols</span>
+                        </div>
+                    </div>
+
+                    <br/>
+
+                    <div class="row">
+                        <div class="col form-group">
+                            <label style="display: block" for="email">Email:</label>
+                            <input style="width: 400px; display: inline" type="text" class="form-control" id="email" placeholder="Enter Email" ng-model="email" pattern="[a-z0-9._%+-]+" required>
+                            <span class="">@xmail.com</span>
+                        </div>
+                    </div>
+
+                    <div class="row text-center text-black-50">
+                        <div class="col">
+                            <span>You can use letters, numbers & periods</span>
+                        </div>
+                    </div>
+
+                    <br/>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn text-white" style=" background:linear-gradient(to left, #7b4397, #dc2430); width: 100px">Create</button>
+                    </div>
+
+                    <br/>
+
+                    <div class="text-center">
+                        Already have an account?
+                        <a href="index.html">Sign in</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
