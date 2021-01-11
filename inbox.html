@@ -40,6 +40,7 @@
     </style>
 
     <script>
+        var allMails;
         var app=angular.module("inboxApp",[]);
         app.controller("inboxContr",function($scope,$http) {
             $scope.isValid=0;
@@ -52,6 +53,10 @@
                 else {
                     $scope.isValid=1;
                     document.getElementById("email").innerHTML=$scope.result[1];
+                    $http.get("get/checkMails.php",{params:{'email':$scope.result[1]}}).then(function (response) {
+                        $scope.mails=response.data;
+                        allMails=response.data;
+                    })
                 }
             })
             $scope.clearSession=function () {
@@ -60,6 +65,35 @@
                 })
             }
         })
+        function select(type) {
+            selectMails=[];
+            if(type=='all') {
+                checkboxes = document.getElementsByName('check');
+                for(var i=0;i<checkboxes.length;i++) {
+                    checkboxes[i].checked = true;
+                }
+            }
+            if(type=='unread') {
+                for(var mail of allMails){
+                    if(mail.read==0){
+                        selectMails=mail.id;
+                    }
+                }
+                for(var i=0;i<selectMails.length;i++) {
+                    document.getElementById(selectMails[i]).checked=true;
+                }
+            }
+            if(type=='read') {
+                for(var mail of allMails){
+                    if(mail.read==1){
+                        selectMails=mail.id;
+                    }
+                }
+                for(var i=0;i<selectMails.length;i++) {
+                    document.getElementById(selectMails[i]).checked=true;
+                }
+            }
+        }
     </script>
 </head>
 <body style=" background:linear-gradient(to left, #7b4397, #dc2430);" ng-show="isValid==1" ng-controller="inboxContr">
@@ -107,22 +141,27 @@
                                         Select
                                     </a>
                                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                        <a class="dropdown-item" href="#">Select Read</a>
-                                        <a class="dropdown-item" href="#">Select Unread</a>
+                                        <a class="dropdown-item" href="javscript:void(0)" onclick="select('read')">Select Read</a>
+                                        <a class="dropdown-item" href="javscript:void(0)" onclick="select('unread')">Select Unread</a>
                                         <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" href="#">Select All</a>
+                                        <a class="dropdown-item" href="javscript:void(0)" onclick="select('all')">Select All</a>
                                     </div>
                                 </li>
                             </ul>
                             <form class="form-inline my-2 my-lg-0">
-                                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" ng-model="search">
                             </form>
                         </div>
                     </nav>
                     <div>
                         <table class="table table-hover">
-                            <tr></tr>
+                            <tr ng-repeat="mail in mails | filter:search">
+                                <td><input type="checkbox" name="check" id="{{mail.id}}"></td>
+                                <td>{{mail.from}}</td>
+                                <td>{{mail.subject}}</td>
+                                <td>{{mail.body}}</td>
+                                <td>{{mail.date}}</td>
+                            </tr>
                         </table>
                     </div>
                 </div>
