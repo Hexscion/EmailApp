@@ -9,5 +9,6 @@ $res=mysqli_query($sql,$str);
 if(mysqli_num_rows($res)>0) {
     $valid=1;
     $_SESSION['isLogged']=true;
+    $_SESSION['email']=$email;
 }
 echo json_encode($valid);
