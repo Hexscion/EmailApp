@@ -73,8 +73,9 @@
                         mailsTBD[j++]=checkboxes[i].className
                     }
                 }
+                alert(mailsTBD)
                 $http.get("get/deleteMail.php",{params:{'mailsTBD':mailsTBD}}).then(function (response) {
-                        $( "#table" ).load(window.location.href + " #table" );
+                    window.location.href="inbox.html";
                 })
             }
             $scope.markRead=function () {
@@ -84,7 +85,8 @@
             }
         })
         function select(type) {
-            selectMails=[];
+            var selectMails=[];
+            var j=0;
             if(type=='all') {
                 checkboxes = document.getElementsByName('check');
                 for(var i=0;i<checkboxes.length;i++) {
@@ -94,7 +96,7 @@
             if(type=='unread') {
                 for(var mail of allMails){
                     if(mail.readflag==0){
-                        selectMails=mail.id;
+                        selectMails[j++]=mail.id;
                     }
                 }
                 for(var i=0;i<selectMails.length;i++) {
@@ -107,7 +109,7 @@
             if(type=='read') {
                 for(var mail of allMails){
                     if(mail.readflag==1){
-                        selectMails=mail.id;
+                        selectMails[j++]=mail.id;
                     }
                 }
                 for(var i=0;i<selectMails.length;i++) {
