@@ -75,7 +75,7 @@
             }
             if(type=='unread') {
                 for(var mail of allMails){
-                    if(mail.read==0){
+                    if(mail.readflag==0){
                         selectMails=mail.id;
                     }
                 }
@@ -85,7 +85,7 @@
             }
             if(type=='read') {
                 for(var mail of allMails){
-                    if(mail.read==1){
+                    if(mail.readflag==1){
                         selectMails=mail.id;
                     }
                 }
@@ -161,6 +161,7 @@
                                 <td>{{mail.subject}}</td>
                                 <td>{{mail.body}}</td>
                                 <td>{{mail.date}}</td>
+                                <td>{{mail.readflag}}</td>
                             </tr>
                         </table>
                     </div>
