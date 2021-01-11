@@ -53,7 +53,7 @@
                 else {
                     $scope.isValid=1;
                     document.getElementById("email").innerHTML=$scope.result[1];
-                    $http.get("get/checkMails.php",{params:{'email':$scope.result[1]}}).then(function (response) {
+                    $http.get("get/checkMails.php").then(function (response) {
                         $scope.mails=response.data;
                         allMails=response.data;
                     })
@@ -61,6 +61,24 @@
             })
             $scope.clearSession=function () {
                 $http.get("get/clearSession.php").then(function (response) {
+                    window.location.href="index.html";
+                })
+            }
+            $scope.delete=function () {
+                checkboxes = document.getElementsByName('check');
+                var mailsTBD=[];
+                var j=0;
+                for(var i=0;i<checkboxes.length;i++) {
+                    if(checkboxes[i].checked == true){
+                        mailsTBD[j++]=checkboxes[i].className
+                    }
+                }
+                $http.get("get/deleteMail.php",{params:{'mailsTBD':mailsTBD}}).then(function (response) {
+                        $( "#table" ).load(window.location.href + " #table" );
+                })
+            }
+            $scope.markRead=function () {
+                $http.get("get/markRead.php").then(function (response) {
                     window.location.href="index.html";
                 })
             }
@@ -80,7 +98,10 @@
                     }
                 }
                 for(var i=0;i<selectMails.length;i++) {
-                    document.getElementById(selectMails[i]).checked=true;
+                    var output=document.getElementsByClassName(selectMails[i])
+                    for(var out of output) {
+                        out.checked = true;
+                    }
                 }
             }
             if(type=='read') {
@@ -90,7 +111,10 @@
                     }
                 }
                 for(var i=0;i<selectMails.length;i++) {
-                    document.getElementById(selectMails[i]).checked=true;
+                    var output=document.getElementsByClassName(selectMails[i])
+                    for(var out of output) {
+                        out.checked = true;
+                    }
                 }
             }
         }
@@ -131,10 +155,10 @@
                         <div class="collapse navbar-collapse" id="navbarSupportedContent">
                             <ul class="navbar-nav mr-auto">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#">Delete</a>
+                                    <a class="nav-link" href="javscript:void(0)" ng-click="delete()">Delete</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#">Mark as Read</a>
+                                    <a class="nav-link" href="javscript:void(0)" ng-click="markRead()">Mark as Read</a>
                                 </li>
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -153,15 +177,14 @@
                             </form>
                         </div>
                     </nav>
-                    <div>
+                    <div id="table">
                         <table class="table table-hover">
                             <tr ng-repeat="mail in mails | filter:search">
-                                <td><input type="checkbox" name="check" id="{{mail.id}}"></td>
+                                <td><input type="checkbox" name="check" class="{{mail.id}}"></td>
                                 <td>{{mail.from}}</td>
                                 <td>{{mail.subject}}</td>
                                 <td>{{mail.body}}</td>
                                 <td>{{mail.date}}</td>
-                                <td>{{mail.readflag}}</td>
                             </tr>
                         </table>
                     </div>

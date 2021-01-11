@@ -1,6 +1,7 @@
 <?php
+session_start();
 $sql=mysqli_connect("localhost","root","","EmailApp");
-$email=$_GET['email'];
+$email=$_SESSION['email'];
 $str="SELECT * FROM `$email` WHERE 1=1";
 $res=mysqli_query($sql,$str);
 $mails=array();
