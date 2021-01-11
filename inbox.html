@@ -34,6 +34,9 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
+        .btn-square {
+            border-radius: 0;
+        }
     </style>
 
     <script>
@@ -41,13 +44,14 @@
         app.controller("inboxContr",function($scope,$http) {
             $scope.isValid=0;
             $http.get("get/checkSession.php").then(function (response) {
-                $scope.valid=response.data;
-                if($scope.valid==0)
+                $scope.result=response.data;
+                if($scope.result[0]==0)
                 {
                     window.location.href="index.html";
                 }
                 else {
                     $scope.isValid=1;
+                    document.getElementById("email").innerHTML=$scope.result[1];
                 }
             })
             $scope.clearSession=function () {
@@ -58,21 +62,69 @@
         })
     </script>
 </head>
-<body style=" background:linear-gradient(to left, #7b4397, #dc2430);" ng-show="isValid" ng-controller="inboxContr">
-<div class="container h-100">
+<body style=" background:linear-gradient(to left, #7b4397, #dc2430);" ng-show="isValid==1" ng-controller="inboxContr">
+<div class="container h-100" style="margin: 0px">
     <div class="row align-items-center h-100">
-        <div class="col-6 mx-auto">
-            <div class="card h-100 justify-content-center" style="width: 1000px; height: 1000px; padding: 20px">
-                <div class="col card" style="width: 250px; height: 1000px; padding: 20px">
-                    <div class="row card" style="width: 250px; height: 250px; padding: 20px">
-
+        <div class="col-11 mx-auto">
+            <div class="card-deck h-100 justify-content-center" style="min-width: 1800px; min-height: 900px;">
+                <div class="card" style="min-width: 350px; border: 0px">
+                    <div class="text-center mx-auto">
+                        <img src="avtar.png">
+                        <h6 id="email"></h6>
+                        <br/>
+                        <button ng-click="clearSession()" class="btn text-white" style="background:linear-gradient(to left, #7b4397, #dc2430); width: 100px">Logout</button>
                     </div>
-                    <div class="row card" style="width: 250px; height: 750px; padding: 20px">
-
+                    <div class="text-center">
+                        <br/>
+                        <button type="button" class="btn btn-square btn-primary btn-lg btn-block">Compose</button>
+                    </div>
+                    <div class="text-center">
+                        <br/>
+                        <button type="button" class="btn btn-square btn-secondary btn-lg btn-block">Inbox</button>
+                    </div>
+                    <div class="text-center">
+                        <br/>
+                        <button type="button" class="btn btn-square btn-secondary btn-lg btn-block">Trash</button>
                     </div>
                 </div>
-                <div class="col card" style="width: 750px; padding: 20px">
+                <div class="card" style="min-width: 1350px;">
+                    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                        <a class="navbar-brand" href="#">Xmail</a>
+                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
 
+                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                            <ul class="navbar-nav mr-auto">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#">Delete</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#">Mark as Read</a>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Select
+                                    </a>
+                                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <a class="dropdown-item" href="#">Select Read</a>
+                                        <a class="dropdown-item" href="#">Select Unread</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item" href="#">Select All</a>
+                                    </div>
+                                </li>
+                            </ul>
+                            <form class="form-inline my-2 my-lg-0">
+                                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                            </form>
+                        </div>
+                    </nav>
+                    <div>
+                        <table class="table table-hover">
+                            <tr></tr>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
