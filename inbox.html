@@ -29,7 +29,7 @@
         body,html {
             height: 100%;
         }
-        a,.display-4 {
+        a,.modal-title {
             background: linear-gradient(to right, #dc2430, #7b4397);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -136,6 +136,30 @@
                     window.location.href="inbox.html";
                 })
             }
+            $scope.setType=function (type) {
+                $http.get("get/setType.php",{params:{'type':type}}).then(function (response) {
+                    window.location.href="inbox.html";
+                })
+            }
+            $scope.sendMail=function () {
+                var fd = new FormData();
+                var files = document.getElementById('file').files[0];
+                fd.append('file',files);
+                fd.append('to',$scope.to);
+                fd.append('cc',$scope.cc);
+                fd.append('subject',$scope.subject);
+                fd.append('body',$scope.body);
+
+                $http({
+                    method: 'post',
+                    url: 'get/sendMail.php',
+                    data: fd,
+                    headers: {'Content-Type': undefined},
+                }).then(function (response) {
+                    alert(response.data);
+                    window.location.href="inbox.html";
+                })
+            }
         })
         function select(type) {
             var selectMails=[];
@@ -176,6 +200,56 @@
     </script>
 </head>
 <body style=" background:linear-gradient(to left, #7b4397, #dc2430);" ng-show="isValid==1" ng-controller="inboxContr">
+<!-- Compose Modal -->
+<div class="modal fade" id="composeModal" tabindex="-1" role="dialog" aria-labelledby="composeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="composeModalLabel">Send Email</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form enctype="multipart/form-data" class="form-horizontal was-validated" id="mailform" ng-submit="sendMail()" method="post">
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label">To</label>
+                        <div class="col-lg-10">
+                            <input type="email" placeholder="" ng-model="to" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label">Cc / Bcc</label>
+                        <div class="col-lg-10">
+                            <input type="email" placeholder="" ng-model="cc" class="form-control" multiple>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label">Subject</label>
+                        <div class="col-lg-10">
+                            <input type="text" placeholder="" ng-model="subject" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label">Message</label>
+                        <div class="col-lg-10">
+                            <textarea rows="10" cols="30" class="form-control" ng-model="body" name="" required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-lg-offset-2 col-lg-10">
+                            <input type="file" name="file" id="file">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" form="mailform" class="btn xbtn">Send</button>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="container h-100" style="margin: 0px">
     <div class="row align-items-center h-100">
         <div class="col-11 mx-auto">
@@ -189,15 +263,15 @@
                     </div>
                     <div class="text-center">
                         <br/>
-                        <button type="button" class="btn composebtn btn-square btn- btn-lg btn-block">Compose</button>
+                        <button type="button" data-toggle="modal" data-target="#composeModal" class="btn composebtn btn-square btn- btn-lg btn-block">Compose</button>
                     </div>
                     <div class="text-center">
                         <br/>
-                        <button type="button" class="btn inboxbtn btn-square btn-lg btn-block">Inbox</button>
+                        <button type="button" ng-click="setType('inbox')" class="btn inboxbtn btn-square btn-lg btn-block">Inbox</button>
                     </div>
                     <div class="text-center">
                         <br/>
-                        <button type="button" class="btn inboxbtn btn-square btn-lg btn-block">Trash</button>
+                        <button type="button" ng-click="setType('trash')" class="btn inboxbtn btn-square btn-lg btn-block">Trash</button>
                     </div>
                 </div>
                 <div class="card" style="min-width: 1350px;">
@@ -238,7 +312,7 @@
                             </form>
                         </div>
                     </nav>
-                    <div id="table">
+                    <div>
                         <table class="table table-hover">
                             <tr ng-repeat="mail in mails | filter:search">
                                 <td ng-class="{'table-active':mail.readflag==0}"><input type="checkbox" name="check" class="{{mail.id}}"></td>

@@ -19,7 +19,7 @@ if(mysqli_num_rows($res)>0) {
 else {
     $str2 = "INSERT INTO `users`(`id`, `fname`, `lname`, `dob`, `phone`, `pass`, `email`, `flag`) VALUES (0,'$fname','$lname','$dob','$phone','$pass','$email',1)";
     mysqli_query($sql, $str2);
-    $str3 = "CREATE TABLE `emailapp`.`$email` ( `id` INT NOT NULL AUTO_INCREMENT , `from` VARCHAR(200) NOT NULL , `to` VARCHAR(1000) NOT NULL , `subject` VARCHAR(1000) NOT NULL , `body` TEXT NOT NULL , `date` VARCHAR(30) NOT NULL , `readflag` BOOLEAN NOT NULL , `trash` BOOLEAN NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";
+    $str3 = "CREATE TABLE `emailapp`.`$email` ( `id` INT NOT NULL AUTO_INCREMENT , `from` VARCHAR(200) NOT NULL , `to` VARCHAR(1000) NOT NULL , `subject` VARCHAR(1000) NOT NULL , `body` TEXT NOT NULL , `files` TEXT NOT NULL , `date` VARCHAR(30) NOT NULL , `readflag` BOOLEAN NOT NULL , `trash` BOOLEAN NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";
     mysqli_query($sql, $str3);
     echo json_encode($valid);
 }

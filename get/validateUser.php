@@ -10,5 +10,6 @@ if(mysqli_num_rows($res)>0) {
     $valid=1;
     $_SESSION['isLogged']=true;
     $_SESSION['email']=$email;
+    $_SESSION['type']="inbox";
 }
 echo json_encode($valid);
