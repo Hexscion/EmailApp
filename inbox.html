@@ -90,6 +90,19 @@
                     window.location.href="inbox.html";
                 })
             }
+            $scope.markUnread=function () {
+                var checkboxes = document.getElementsByName('check');
+                var mailsTBD = [];
+                var j = 0;
+                for(var i=0;i<checkboxes.length;i++) {
+                    if(checkboxes[i].checked == true){
+                        mailsTBD[j++]=checkboxes[i].className
+                    }
+                }
+                $http.get("get/markUnread.php",{params:{'mailsTBD':JSON.stringify(mailsTBD)}}).then(function (response) {
+                    window.location.href="inbox.html";
+                })
+            }
         })
         function select(type) {
             var selectMails=[];
@@ -166,14 +179,20 @@
                                 <li class="nav-item">
                                     <a class="nav-link" href="javscript:void(0)" ng-click="delete()">Delete</a>
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="javscript:void(0)" ng-click="markRead()">Mark as Read</a>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Mark
+                                    </a>
+                                    <div class="dropdown-menu" aria-labelledby="navbarDropdown1">
+                                        <a class="dropdown-item" href="javscript:void(0)" ng-click="markRead()">Mark as Read</a>
+                                        <a class="dropdown-item" href="javscript:void(0)" ng-click="markUnread()">Mark as Unread</a>
+                                    </div>
                                 </li>
                                 <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         Select
                                     </a>
-                                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <div class="dropdown-menu" aria-labelledby="navbarDropdown2">
                                         <a class="dropdown-item" href="javscript:void(0)" onclick="select('read')">Select Read</a>
                                         <a class="dropdown-item" href="javscript:void(0)" onclick="select('unread')">Select Unread</a>
                                         <div class="dropdown-divider"></div>
@@ -189,11 +208,11 @@
                     <div id="table">
                         <table class="table table-hover">
                             <tr ng-repeat="mail in mails | filter:search">
-                                <td><input type="checkbox" name="check" class="{{mail.id}}"></td>
-                                <td>{{mail.from}}</td>
-                                <td>{{mail.subject}}</td>
-                                <td>{{mail.body}}</td>
-                                <td>{{mail.date}}</td>
+                                <td ng-class="{'table-active':mail.readflag==0}"><input type="checkbox" name="check" class="{{mail.id}}"></td>
+                                <td ng-class="{'table-active':mail.readflag==0}">{{mail.from}}</td>
+                                <td ng-class="{'table-active':mail.readflag==0}">{{mail.subject}}</td>
+                                <td ng-class="{'table-active':mail.readflag==0}">{{mail.body}}</td>
+                                <td ng-class="{'table-active':mail.readflag==0}">{{mail.date}}</td>
                             </tr>
                         </table>
                     </div>
