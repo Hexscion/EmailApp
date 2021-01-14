@@ -37,6 +37,39 @@
         .btn-square {
             border-radius: 0;
         }
+        .xbtn {
+            background: linear-gradient(to right, #dc2430, #7b4397);
+            border-image-source: linear-gradient(to right, #dc2430, #7b4397);
+            border-image-slice: 1;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .xbtn:hover {
+            background:linear-gradient(to left, #7b4397, #dc2430);
+            -webkit-text-fill-color: white;
+        }
+        .composebtn {
+            color: white;
+            background-color: #7b4397;
+            border-color: #7b4397;
+            opacity: 0.9;
+            transition: opacity 0.15s ease-out;
+        }
+        .composebtn:hover {
+            color: white;
+            opacity: 1;
+        }
+        .inboxbtn {
+            color: white;
+            background-color: #BE2E51;
+            border-color: #BE2E51;
+            opacity: 0.9;
+            transition: opacity 0.15s ease-out;
+        }
+        .inboxbtn:hover {
+            color: white;
+            opacity: 1;
+        }
     </style>
 
     <script>
@@ -152,19 +185,19 @@
                         <img src="avtar.png">
                         <h6 id="email"></h6>
                         <br/>
-                        <button ng-click="clearSession()" class="btn text-white" style="background:linear-gradient(to left, #7b4397, #dc2430); width: 100px">Logout</button>
+                        <button ng-click="clearSession()" class="btn xbtn" style="width: 100px">Logout</button>
                     </div>
                     <div class="text-center">
                         <br/>
-                        <button type="button" class="btn btn-square btn-primary btn-lg btn-block">Compose</button>
+                        <button type="button" class="btn composebtn btn-square btn- btn-lg btn-block">Compose</button>
                     </div>
                     <div class="text-center">
                         <br/>
-                        <button type="button" class="btn btn-square btn-secondary btn-lg btn-block">Inbox</button>
+                        <button type="button" class="btn inboxbtn btn-square btn-lg btn-block">Inbox</button>
                     </div>
                     <div class="text-center">
                         <br/>
-                        <button type="button" class="btn btn-square btn-secondary btn-lg btn-block">Trash</button>
+                        <button type="button" class="btn inboxbtn btn-square btn-lg btn-block">Trash</button>
                     </div>
                 </div>
                 <div class="card" style="min-width: 1350px;">
