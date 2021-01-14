@@ -13,11 +13,16 @@ if(mysqli_num_rows($res)>0) {
     $extension = $_FILES['file']['type'];
     $extension = substr($extension,6);
     $filename = $filename.".$extension";
-    $location = 'C:\xampp\htdocs\EmailApp\upload';
+    $location = 'C:\xampp\htdocs\EmailApp\upload\\';
     move_uploaded_file($_FILES['file']['tmp_name'],$location.$filename);
     $filelocation = $location.$filename;
     $filelocation = addslashes($filelocation);
-    $cc=$to.",".$cc;
+    if($cc!="undefined"){
+        $cc=$to.",".$cc;
+    }
+    else{
+        $cc=$to;
+    }
     $date = date('Y-m-d');
     $str="INSERT INTO `$to`(`id`, `from`, `to`, `subject`, `body`, `files`, `date`, `readflag`, `trash`) VALUES (0,'$from','$cc','$subject','$body','$filelocation','$date',0,0)";
     mysqli_query($sql,$str);
