@@ -65,22 +65,29 @@
                 })
             }
             $scope.delete=function () {
-                checkboxes = document.getElementsByName('check');
-                var mailsTBD=[];
-                var j=0;
+                var checkboxes = document.getElementsByName('check');
+                var mailsTBD = [];
+                var j = 0;
                 for(var i=0;i<checkboxes.length;i++) {
                     if(checkboxes[i].checked == true){
                         mailsTBD[j++]=checkboxes[i].className
                     }
                 }
-                alert(mailsTBD)
-                $http.get("get/deleteMail.php",{params:{'mailsTBD':mailsTBD}}).then(function (response) {
+                $http.get("get/deleteMail.php",{params:{'mailsTBD':JSON.stringify(mailsTBD)}}).then(function (response) {
                     window.location.href="inbox.html";
                 })
             }
             $scope.markRead=function () {
-                $http.get("get/markRead.php").then(function (response) {
-                    window.location.href="index.html";
+                var checkboxes = document.getElementsByName('check');
+                var mailsTBD = [];
+                var j = 0;
+                for(var i=0;i<checkboxes.length;i++) {
+                    if(checkboxes[i].checked == true){
+                        mailsTBD[j++]=checkboxes[i].className
+                    }
+                }
+                $http.get("get/markRead.php",{params:{'mailsTBD':JSON.stringify(mailsTBD)}}).then(function (response) {
+                    window.location.href="inbox.html";
                 })
             }
         })
