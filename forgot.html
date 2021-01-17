@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="recoverApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- Font Awesome -->
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+
+    <!-- AngularJS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.2/angular.min.js" integrity="sha512-7oYXeK0OxTFxndh0erL8FsjGvrl2VMDor6fVqzlLGfwOQQqTbYsGPv4ZZ15QHfSk80doyaM0ZJdvkyDcVO7KFA==" crossorigin="anonymous"></script>
+
+    <style>
+        body,html {
+            height: 100%;
+        }
+        a,.display-4 {
+            background: linear-gradient(to right, #dc2430, #7b4397);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .xbtn {
+            background: linear-gradient(to right, #dc2430, #7b4397);
+            border-image-source: linear-gradient(to right, #dc2430, #7b4397);
+            border-image-slice: 1;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .xbtn:hover {
+            background:linear-gradient(to left, #7b4397, #dc2430);
+            -webkit-text-fill-color: white;
+        }
+    </style>
+
+    <script>
+        var app=angular.module("recoverApp",[]);
+        app.controller("recoverContr",function($scope,$http) {
+            $scope.recover=function() {
+                $http.get("get/recover.php", {
+                    params: {
+                        'phone': $scope.phone
+                    }
+                }).then(function (response) {
+                    var test=response.data
+                    alert(test)
+                })
+            }
+        })
+    </script>
+</head>
+<body style=" background:linear-gradient(to left, #7b4397, #dc2430);" ng-controller="recoverContr">
+<div class="container h-100">
+    <div class="row align-items-center h-100">
+        <div class="col-6 mx-auto">
+            <div class="card h-100 justify-content-center" style="width: 550px; padding: 20px">
+                <form class="was-validated" ng-submit="recover()" method="POST">
+                    <div class="text-center">
+                        <span class="display-4">Forgot Credentials?</span>
+                        <hr/>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Enter your registered Phone number:</label>
+                        <input type="tel" class="form-control" id="phone" placeholder="Phone Number" ng-model="phone" pattern=".{10,10}" required>
+                    </div>
+                    <br/>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn xbtn text-white" style="width: 100px">Recover</button>
+                    </div>
+
+                    <br/>
+
+                    <div class="row">
+                        <div class="col text-center">
+                            <a href="index.html">Click here!</a>
+                            <span>To go back to Login Page</span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
