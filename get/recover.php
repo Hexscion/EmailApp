@@ -4,7 +4,10 @@ $phone=$_GET['phone'];
 $str="SELECT * FROM users WHERE phone='$phone'";
 $res=mysqli_query($sql,$str);
 if(mysqli_num_rows($res)>0) {
-    $phone="91".$phone;
+    $data=mysqli_fetch_assoc($res);
+    $email=$data['email'];
+    $password=$data['pass'];
+    /*$phone="91".$phone;
     $phone=(int)$phone;
     $data=mysqli_fetch_assoc($res);
     $email=$data['email'];
@@ -13,7 +16,7 @@ if(mysqli_num_rows($res)>0) {
     $apiKey = urlencode('VzTOZJAKuY0-l9FtL7tT49dM4WYavAz55sdpIgbxgx');
     // Message details
     $numbers = array($phone);
-    $sender = urlencode('TXTLCL');
+    $sender = urlencode('XMAIL');
     $message = rawurlencode("Your email is: '$email' and your password is: '$password'");
     $numbers = implode(",", $numbers);
     // Prepare data for POST request
@@ -26,7 +29,8 @@ if(mysqli_num_rows($res)>0) {
     $response = curl_exec($ch);
     curl_close($ch);
     // Process your response here
-    echo "Credentials sent to your registered phone number ".$response;
+    echo $response;*/
+    echo "Your email is: '$email' and your password is: '$password'";
 }
 else{
     echo "Invalid phone number";

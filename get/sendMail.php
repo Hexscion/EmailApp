@@ -9,14 +9,14 @@ $body=$_POST['body'];
 $str="SELECT * FROM users WHERE email='$to'";
 $res=mysqli_query($sql,$str);
 if(mysqli_num_rows($res)>0) {
-    $filename = time();
-    $extension = $_FILES['file']['type'];
-    $extension = substr($extension,6);
-    $filename = $filename.".$extension";
+    $tempfile=$_FILES['file']['name'];
+    $tempfilename=explode(".",$tempfile);
+    $filename = $tempfilename[0].time();
+    $type = $_FILES['file']['type'];
+    $extension = explode("/",$type);
+    $filename = $filename.".$extension[1]";
     $location = 'C:\xampp\htdocs\EmailApp\upload\\';
     move_uploaded_file($_FILES['file']['tmp_name'],$location.$filename);
-    $filelocation = $location.$filename;
-    $filelocation = addslashes($filelocation);
     if($cc!="undefined"){
         $cc=$to.",".$cc;
     }
@@ -24,7 +24,8 @@ if(mysqli_num_rows($res)>0) {
         $cc=$to;
     }
     $date = date('Y-m-d');
-    $str="INSERT INTO `$to`(`id`, `from`, `to`, `subject`, `body`, `files`, `date`, `readflag`, `trash`) VALUES (0,'$from','$cc','$subject','$body','$filelocation','$date',0,0)";
+    $time = time();
+    $str="INSERT INTO `$to`(`id`, `from`, `to`, `subject`, `body`, `files`, `date`, `time`, `readflag`, `trash`) VALUES (0,'$from','$cc','$subject','$body','$filename','$date','$time',0,0)";
     mysqli_query($sql,$str);
     echo "Email Sent";
 }

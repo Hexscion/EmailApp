@@ -46,6 +46,7 @@
             -webkit-text-fill-color: white;
         }
         .composebtn {
+            width: 300px;
             color: white;
             background-color: #7b4397;
             border-color: #7b4397;
@@ -57,9 +58,10 @@
             opacity: 1;
         }
         .inboxbtn {
+            width: 300px;
             color: white;
-            background-color: #BE2E51;
-            border-color: #BE2E51;
+            background-color: #dc2430;
+            border-color: #dc2430;
             opacity: 0.9;
             transition: opacity 0.15s ease-out;
         }
@@ -87,6 +89,15 @@
                         $scope.mails=response.data;
                         allMails=response.data;
                     })
+                    $http.get("get/getType.php").then(function (response) {
+                        var type=response.data;
+                        if(type==1){
+                            $scope.isType=1;
+                        }
+                        else {
+                            $scope.isType=0;
+                        }
+                    })
                 }
             })
             $scope.clearSession=function () {
@@ -104,6 +115,19 @@
                     }
                 }
                 $http.get("get/deleteMail.php",{params:{'mailsTBD':JSON.stringify(mailsTBD)}}).then(function (response) {
+                    window.location.href="inbox.html";
+                })
+            }
+            $scope.undodelete=function () {
+                var checkboxes = document.getElementsByName('check');
+                var mailsTBD = [];
+                var j = 0;
+                for(var i=0;i<checkboxes.length;i++) {
+                    if(checkboxes[i].checked == true){
+                        mailsTBD[j++]=checkboxes[i].className
+                    }
+                }
+                $http.get("get/undoDelete.php",{params:{'mailsTBD':JSON.stringify(mailsTBD)}}).then(function (response) {
                     window.location.href="inbox.html";
                 })
             }
@@ -141,21 +165,27 @@
             $scope.sendMail=function () {
                 var fd = new FormData();
                 var files = document.getElementById('file').files[0];
-                fd.append('file',files);
-                fd.append('to',$scope.to);
-                fd.append('cc',$scope.cc);
-                fd.append('subject',$scope.subject);
-                fd.append('body',$scope.body);
+                var filesize = ((files.size/1024)/1024).toFixed(4);
+                if(filesize<=40) {
+                    fd.append('file',files);
+                    fd.append('to',$scope.to);
+                    fd.append('cc',$scope.cc);
+                    fd.append('subject',$scope.subject);
+                    fd.append('body',$scope.body);
 
-                $http({
-                    method: 'post',
-                    url: 'get/sendMail.php',
-                    data: fd,
-                    headers: {'Content-Type': undefined},
-                }).then(function (response) {
-                    alert(response.data);
-                    window.location.href="inbox.html";
-                })
+                    $http({
+                        method: 'post',
+                        url: 'get/sendMail.php',
+                        data: fd,
+                        headers: {'Content-Type': undefined},
+                    }).then(function (response) {
+                        alert(response.data);
+                        window.location.href="inbox.html";
+                    })
+                }
+                else {
+                    alert("Attached file is too large")
+                }
             }
             $scope.viewMail=function (data) {
                 $http.get("get/viewMail.php",{params:{'id':data.id}}).then(function (response) {
@@ -163,6 +193,10 @@
                     $scope.ccview=oneMail.to;
                     $scope.subjectview=oneMail.subject;
                     $scope.bodyview=oneMail.body;
+                    var filename=oneMail.files;
+                    $scope.filehead=filename;
+                    filename="http://localhost/EmailApp/upload/"+filename;
+                    $scope.fileview=filename;
                     $('#viewModal').modal('show');
                 })
             }
@@ -221,13 +255,13 @@
                     <div class="form-group">
                         <label class="col-lg-2 control-label">To</label>
                         <div class="col-lg-10">
-                            <input type="email" placeholder="" ng-model="to" class="form-control" required>
+                            <input type="email" placeholder="" ng-model="to" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" class="form-control" required>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-lg-2 control-label">Cc / Bcc</label>
+                        <label class="col-lg-5 control-label">CC (separated by , )</label>
                         <div class="col-lg-10">
-                            <input type="email" placeholder="" ng-model="cc" class="form-control" multiple>
+                            <input type="email" placeholder="" ng-model="cc" class="form-control"  multiple>
                         </div>
                     </div>
                     <div class="form-group">
@@ -268,7 +302,7 @@
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <label class="col-lg-2 control-label">Cc / Bcc</label>
+                    <label class="col-lg-2 control-label">CC</label>
                     <div class="col-lg-10">
                         <input type="email" placeholder="" ng-model="ccview" class="form-control" disabled>
                     </div>
@@ -283,6 +317,12 @@
                     <label class="col-lg-2 control-label">Message</label>
                     <div class="col-lg-10">
                         <textarea rows="10" cols="30" class="form-control" ng-model="bodyview" name="" disabled></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-2 control-label">Attachments</label>
+                    <div class="col-lg-10">
+                        <a href="{{fileview}}">{{filehead}}</a>
                     </div>
                 </div>
             </div>
@@ -303,15 +343,15 @@
                         <br/>
                         <button ng-click="clearSession()" class="btn xbtn" style="width: 100px">Logout</button>
                     </div>
-                    <div class="text-center">
-                        <br/>
+                    <hr/>
+                    <div class="text-center mx-auto">
                         <button type="button" data-toggle="modal" data-target="#composeModal" class="btn composebtn btn-square btn- btn-lg btn-block">Compose</button>
                     </div>
-                    <div class="text-center">
-                        <br/>
+                    <hr/>
+                    <div class="text-center mx-auto">
                         <button type="button" ng-click="setType('inbox')" class="btn inboxbtn btn-square btn-lg btn-block">Inbox</button>
                     </div>
-                    <div class="text-center">
+                    <div class="text-center mx-auto">
                         <br/>
                         <button type="button" ng-click="setType('trash')" class="btn inboxbtn btn-square btn-lg btn-block">Trash</button>
                     </div>
@@ -326,7 +366,10 @@
                         <div class="collapse navbar-collapse" id="navbarSupportedContent">
                             <ul class="navbar-nav mr-auto">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="javscript:void(0)" ng-click="delete()">Delete</a>
+                                    <a class="nav-link" ng-show="isType==1" href="javscript:void(0)" ng-click="delete()">Delete</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" ng-show="isType==0" href="javscript:void(0)" ng-click="undodelete()">Undo Delete</a>
                                 </li>
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -355,13 +398,13 @@
                         </div>
                     </nav>
                     <div>
-                        <table class="table table-hover">
-                            <tr ng-repeat="mail in mails | filter:search" ng-click="viewMail(mail)">
-                                <td ng-class="{'table-active':mail.readflag==0}"><input type="checkbox" name="check" class="{{mail.id}}"></td>
-                                <td ng-class="{'table-active':mail.readflag==0}">{{mail.from}}</td>
-                                <td ng-class="{'table-active':mail.readflag==0}">{{mail.subject}}</td>
-                                <td ng-class="{'table-active':mail.readflag==0}">{{mail.body}}</td>
-                                <td ng-class="{'table-active':mail.readflag==0}">{{mail.date}}</td>
+                        <table class="table table-hover" style="table-layout:fixed; overflow-y: auto">
+                            <tr ng-repeat="mail in mails | filter:search">
+                                <td style="width: 10px" ng-class="{'table-active':mail.readflag==0}"><input type="checkbox" name="check" class="{{mail.id}}"></td>
+                                <td style="width: 100px" ng-class="{'table-active':mail.readflag==0}" ng-click="viewMail(mail)">{{mail.from}}</td>
+                                <td style="width: 100px; white-space: nowrap; overflow:hidden; text-overflow: ellipsis" ng-class="{'table-active':mail.readflag==0}" ng-click="viewMail(mail)">{{mail.subject}}</td>
+                                <td style="width: 150px; white-space: nowrap; overflow:hidden; text-overflow: ellipsis" ng-class="{'table-active':mail.readflag==0}" ng-click="viewMail(mail)">{{mail.body}}</td>
+                                <td style="width: 50px" ng-class="{'table-active':mail.readflag==0}" ng-click="viewMail(mail)">{{mail.date}}</td>
                             </tr>
                         </table>
                     </div>

@@ -4,7 +4,7 @@ $sql=mysqli_connect("localhost","root","","EmailApp");
 $email=$_SESSION['email'];
 $type=$_SESSION['type'];
 if($type=="inbox") {
-    $str="SELECT * FROM `$email` WHERE `trash`=0";
+    $str="SELECT * FROM `$email` WHERE `trash`=0 ORDER BY `time` DESC ";
     $res=mysqli_query($sql,$str);
     $mails=array();
     while ($arr=mysqli_fetch_assoc($res))
@@ -14,7 +14,7 @@ if($type=="inbox") {
     echo json_encode($mails);
 }
 else {
-    $str="SELECT * FROM `$email` WHERE `trash`=1";
+    $str="SELECT * FROM `$email` WHERE `trash`=1 ORDER BY `time` DESC ";
     $res=mysqli_query($sql,$str);
     $mails=array();
     while ($arr=mysqli_fetch_assoc($res))
