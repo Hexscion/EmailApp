@@ -190,7 +190,8 @@
             $scope.viewMail=function (data) {
                 $http.get("get/viewMail.php",{params:{'id':data.id}}).then(function (response) {
                     var oneMail=response.data;
-                    $scope.ccview=oneMail.to;
+                    $scope.fromview=oneMail.from;
+                    $scope.ccview=oneMail.cc;
                     $scope.subjectview=oneMail.subject;
                     $scope.bodyview=oneMail.body;
                     var filename=oneMail.files;
@@ -255,13 +256,13 @@
                     <div class="form-group">
                         <label class="col-lg-2 control-label">To</label>
                         <div class="col-lg-10">
-                            <input type="email" placeholder="" ng-model="to" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" class="form-control" required>
+                            <input type="email" placeholder="" ng-model="to" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}" class="form-control" required>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-lg-5 control-label">CC (separated by , )</label>
                         <div class="col-lg-10">
-                            <input type="email" placeholder="" ng-model="cc" class="form-control"  multiple>
+                            <input type="text" placeholder="" ng-model="cc" pattern="^(([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)(,\s|\s*$))*$" class="form-control">
                         </div>
                     </div>
                     <div class="form-group">
@@ -301,6 +302,12 @@
                 </button>
             </div>
             <div class="modal-body">
+                <div class="form-group">
+                    <label class="col-lg-2 control-label">From</label>
+                    <div class="col-lg-10">
+                        <input type="email" placeholder="" ng-model="fromview" class="form-control" disabled>
+                    </div>
+                </div>
                 <div class="form-group">
                     <label class="col-lg-2 control-label">CC</label>
                     <div class="col-lg-10">
