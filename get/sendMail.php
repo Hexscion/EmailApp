@@ -17,17 +17,23 @@ if(mysqli_num_rows($res)>0) {
     $filename = $filename.".$extension[1]";
     $location = 'C:\xampp\htdocs\EmailApp\upload\\';
     move_uploaded_file($_FILES['file']['tmp_name'],$location.$filename);
-    if($cc!="undefined"){
-        $cc=$to.",".$cc;
-    }
-    else{
-        $cc=$to;
-    }
     $date = date('Y-m-d');
     $time = time();
-    $str="INSERT INTO `$to`(`id`, `from`, `to`, `subject`, `body`, `files`, `date`, `time`, `readflag`, `trash`) VALUES (0,'$from','$cc','$subject','$body','$filename','$date','$time',0,0)";
-    mysqli_query($sql,$str);
-    echo "Email Sent";
+    if($cc!="undefined"){
+        $cc=$to.", ".$cc;
+        $ccarr = explode(", ",$cc);
+        foreach ($ccarr as $ccto){
+            $str="INSERT INTO `$ccto`(`id`, `from`, `cc`, `subject`, `body`, `files`, `date`, `time`, `readflag`, `trash`) VALUES (0,'$from','$cc','$subject','$body','$filename','$date','$time',0,0)";
+            mysqli_query($sql,$str);
+        }
+        echo "Email Sent";
+    }
+    else{
+        $cc="None";
+        $str="INSERT INTO `$to`(`id`, `from`, `cc`, `subject`, `body`, `files`, `date`, `time`, `readflag`, `trash`) VALUES (0,'$from','$cc','$subject','$body','$filename','$date','$time',0,0)";
+        mysqli_query($sql,$str);
+        echo "Email Sent";
+    }
 }
 else{
     echo "Recipient email does not exist";
