@@ -16,7 +16,7 @@ $to=$_POST['to'];
 $cc=$_POST['cc'];
 $subject=$_POST['subject'];
 $body=$_POST['body'];
-if(strpos("@xmail.com",$to)!=false){
+if(strpos($to,"@xmail.com")!=false){
     $str="SELECT * FROM users WHERE email='$to'";
     $res=mysqli_query($sql,$str);
     if(mysqli_num_rows($res)>0) {
