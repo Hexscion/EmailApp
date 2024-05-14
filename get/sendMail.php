@@ -59,8 +59,8 @@ else{
             $mail->isSMTP();                                      // Set mailer to use SMTP
             $mail->Host = 'smtp.gmail.com';                       // Specify main and backup SMTP servers
             $mail->SMTPAuth = true;                               // Enable SMTP authentication
-            $mail->Username = 'xmailnew2020@gmail.com';           // SMTP username
-            $mail->Password = 'xmail@24';                         // SMTP password
+            $mail->Username = '';           // SMTP username
+            $mail->Password = '';                         // SMTP password
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;   // Enable TLS encryption, `ssl` also accepted
             $mail->Port = 587;
 
